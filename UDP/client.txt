@@ -1,0 +1,55 @@
+import java.io.*;
+import java.net.*;
+
+class udpchatclient
+{
+    public static void main(String args[]) throws Exception
+    {
+        BufferedReader br = new BufferedReader(
+                new InputStreamReader(System.in));
+
+        DatagramSocket client = new DatagramSocket(8050);
+
+        InetAddress address = InetAddress.getLocalHost();
+
+        System.out.println("Press Enter without text to quit");
+
+        while (true)
+        {
+            System.out.print("Enter text for server : ");
+            String msg = br.readLine();
+
+            byte[] data = msg.getBytes();
+
+            DatagramPacket packet =
+                new DatagramPacket(
+                    data,
+                    data.length,
+                    address,
+                    8040);
+
+            client.send(packet);
+
+            if (msg.trim().length() == 0)
+                break;
+
+            byte[] receiveData = new byte[1024];
+
+            DatagramPacket receivePacket =
+                new DatagramPacket(
+                    receiveData,
+                    receiveData.length);
+
+            client.receive(receivePacket);
+
+            String reply = new String(
+                receivePacket.getData(),
+                0,
+                receivePacket.getLength());
+
+            System.out.println("From Server <<< " + reply);
+        }
+
+        client.close();
+    }
+}

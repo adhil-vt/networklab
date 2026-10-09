@@ -1,0 +1,52 @@
+import java.util.Scanner;
+
+class Leaky
+{
+    public static void main(String[] args)
+    {
+        Scanner sc = new Scanner(System.in);
+
+        // Get input values
+        System.out.print("Enter number of time intervals: ");
+        int n = sc.nextInt();
+
+        System.out.print("Enter bucket size: ");
+        int bucketSize = sc.nextInt();
+
+        System.out.print("Enter output rate: ");
+        int outputRate = sc.nextInt();
+
+        // Packets currently in the bucket
+        int packets = 0;
+
+        // Process each time interval
+        for (int time = 1; time <= n; time++)
+        {
+            System.out.print("\nEnter number of incoming packets at time " + time + ": ");
+            int incoming = sc.nextInt();
+
+            // Calculate packets lost when bucket is full
+            int loss = Math.max(0, packets + incoming - bucketSize);
+
+            // Add incoming packets to bucket
+            packets = Math.min(bucketSize, packets + incoming);
+
+            // Send packets at fixed output rate
+            int sent = Math.min(packets, outputRate);
+
+            // Remove sent packets from bucket
+            packets -= sent;
+
+            // Display result
+            System.out.println("\nAt time " + time);
+            System.out.println("Packets entering = " + incoming);
+            System.out.println("Packet loss = " + loss);
+            System.out.println("Packets in bucket = " + (packets + sent));
+            System.out.println("Packets sent out = " + sent);
+            System.out.println("Packets remaining = " + packets);
+            System.out.println("---------------------------------");
+        }
+
+        sc.close();
+    }
+}

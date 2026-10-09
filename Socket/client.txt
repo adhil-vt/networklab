@@ -1,0 +1,25 @@
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+
+int main() {
+    int s;
+    struct sockaddr_in a;
+    char buf[1024] = {0};
+
+    s = socket(AF_INET, SOCK_STREAM, 0);
+
+    a.sin_family = AF_INET;
+    a.sin_port = htons(8080);
+    a.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+    connect(s, (struct sockaddr*)&a, sizeof(a));
+
+    send(s, "Hello Server", 12, 0);
+    read(s, buf, sizeof(buf));
+    printf("Server: %s\n", buf);
+
+    close(s);
+    return 0;
+}

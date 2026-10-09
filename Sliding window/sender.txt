@@ -1,0 +1,60 @@
+import java.net.*;
+import java.io.*;
+import java.util.*;
+
+public class Swsender
+{
+    public static void main(String args[]) throws Exception
+    {
+        ServerSocket server = new ServerSocket(5000);
+        Socket socket = server.accept();
+
+        Scanner sc = new Scanner(System.in);
+
+        BufferedReader in = new BufferedReader(
+            new InputStreamReader(socket.getInputStream()));
+
+        PrintWriter out = new PrintWriter(
+            socket.getOutputStream(), true);
+
+        int n, ack;
+        String choice;
+
+        do
+        {
+            System.out.print("Enter the no. of frames: ");
+            n = Integer.parseInt(sc.nextLine());
+
+            out.println(n);
+
+            if (n <= 7)
+            {
+                System.out.println("Enter " + n + " Messages to be sent");
+
+                for (int i = 0; i < n; i++)
+                {
+                    String msg = sc.nextLine();
+                    out.println(msg);
+                }
+
+                ack = Integer.parseInt(in.readLine());
+                System.out.println("Acknowledgment received for "
+                                   + ack + " frames");
+            }
+            else
+            {
+                System.out.println("The no. of frames exceeds window size");
+                break;
+            }
+
+            System.out.print("Do you want to send some more frames: ");
+            choice = sc.nextLine();
+
+            out.println(choice);
+
+        } while (choice.equals("yes"));
+
+        socket.close();
+        server.close();
+    }
+}
